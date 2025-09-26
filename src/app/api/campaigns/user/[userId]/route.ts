@@ -3,12 +3,13 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
+    const { userId } = await params;
     const campaigns = await prisma.campaign.findMany({
       where: {
-        userId: params.userId
+        userId
       },
       include: {
         contributions: {

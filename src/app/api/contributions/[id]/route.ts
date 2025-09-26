@@ -3,14 +3,15 @@ import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await request.json();
     
     const contribution = await prisma.contribution.update({
       where: {
-        id: params.id
+        id
       },
       data: {
         status: data.status,
@@ -30,12 +31,13 @@ export async function PATCH(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const contribution = await prisma.contribution.findUnique({
       where: {
-        id: params.id
+        id
       },
       include: {
         campaign: true
