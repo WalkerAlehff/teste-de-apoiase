@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  images      String   // JSON string of image URLs
+  goal        Float    // Goal amount in reais
+  current     Float    @default(0.0) // Current amount raised
+  handle      String   // Infinitepay handle that will receive payments
+  userId      String   // User ID from Infinitepay
+  checkoutUrl String?  // Base checkout URL for payments
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  contributions Contribution[]
+  
+  @@map("campaigns")
+}
+
+model Contribution {
+  id               String   @id @default(cuid())
+  campaignId       String
+  amount           Float    // Amount in reais
+  contributorName  String
+  contributorEmail String
+  transactionNsu   String?  // Infinitepay transaction NSU
+  status           String   @default("pending") // pending, completed, failed
+  createdAt        DateTime @default(now())
+  
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  
+  @@map("contributions")
+}
