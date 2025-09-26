@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Heart, Plus, Edit, Users, Target, Calendar, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -31,26 +32,27 @@ export default function MyCampaigns() {
   const { userData, isLoading: userLoading } = useUserData();
 
   useEffect(() => {
+    const loadCampaigns = async () => {
+      if (!userData) return;
+      
+      try {
+        const response = await fetch(`/api/campaigns/user/${userData.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setCampaigns(data);
+        }
+      } catch (error) {
+        console.error('Error fetching user campaigns:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (userData && !userLoading) {
-      fetchUserCampaigns();
+      loadCampaigns();
     }
   }, [userData, userLoading]);
 
-  const fetchUserCampaigns = async () => {
-    if (!userData) return;
-    
-    try {
-      const response = await fetch(`/api/campaigns/user/${userData.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setCampaigns(data);
-      }
-    } catch (error) {
-      console.error('Error fetching user campaigns:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading || userLoading) {
     return (
@@ -181,15 +183,12 @@ export default function MyCampaigns() {
                     <div className="md:flex">
                       {/* Image */}
                       {mainImage && (
-                        <div className="md:w-48 h-32 md:h-auto">
-                          <img
+                        <div className="md:w-48 h-32 md:h-auto relative">
+                          <Image
                             src={mainImage}
                             alt={campaign.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                            }}
+                            fill
+                            className="object-cover"
                           />
                         </div>
                       )}

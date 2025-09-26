@@ -24,10 +24,9 @@ interface Campaign {
 interface ContributionModalProps {
   campaign: Campaign;
   onClose: () => void;
-  onSuccess: () => void;
 }
 
-export function ContributionModal({ campaign, onClose, onSuccess }: ContributionModalProps) {
+export function ContributionModal({ campaign, onClose }: ContributionModalProps) {
   const [amount, setAmount] = useState('');
   const [contributorName, setContributorName] = useState('');
   const [contributorEmail, setContributorEmail] = useState('');

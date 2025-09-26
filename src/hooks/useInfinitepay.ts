@@ -13,7 +13,7 @@ export function useInfinitepayApi() {
       try {
         await waitForInfinitepay();
         setIsInitialized(true);
-      } catch (error) {
+      } catch {
         console.warn('Infinitepay API not available, running in development mode');
         setIsInitialized(true);
       }
