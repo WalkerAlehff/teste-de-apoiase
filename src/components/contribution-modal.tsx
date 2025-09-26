@@ -24,9 +24,10 @@ interface Campaign {
 interface ContributionModalProps {
   campaign: Campaign;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function ContributionModal({ campaign, onClose }: ContributionModalProps) {
+export function ContributionModal({ campaign, onClose, onSuccess }: ContributionModalProps) {
   const [amount, setAmount] = useState('');
   const [contributorName, setContributorName] = useState('');
   const [contributorEmail, setContributorEmail] = useState('');
@@ -93,6 +94,11 @@ export function ContributionModal({ campaign, onClose }: ContributionModalProps)
           transactionNsu: paymentResult.transactionNsu
         })
       });
+
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
 
       // Redirect to success page
       window.location.href = `/success?contribution=${contribution.id}`;
