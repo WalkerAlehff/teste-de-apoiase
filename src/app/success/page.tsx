@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, Heart, Share2, ArrowLeft } from 'lucide-react';
@@ -23,7 +23,7 @@ interface Contribution {
   };
 }
 
-export default function SuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const [contribution, setContribution] = useState<Contribution | null>(null);
   const [loading, setLoading] = useState(true);
@@ -211,5 +211,20 @@ export default function SuccessPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
